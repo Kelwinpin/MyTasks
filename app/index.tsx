@@ -1,9 +1,20 @@
+import Card from '@/components/Card';
 import { useState } from 'react';
-import { View , StyleSheet, Text, FlatList, TouchableOpacity, TextInput } from 'react-native';
+import { View , StyleSheet, Text, FlatList, TouchableOpacity, TextInput, Alert } from 'react-native';
 
 export default function HomeScreen() {
   const [tasks, setTasks] = useState<string[]>([]);
   const [taskName, setTaskName] = useState('');
+
+  const addTask = (task: string) => {
+    tasks.includes(task) ? 
+    Alert.alert('Tarefa já existe') : setTasks([...tasks, task]);
+    setTaskName('');
+  };
+
+  const removeTask = (task: string) => {
+    setTasks(tasks.filter(t => t !== task));
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Vamos definir as tarefas:</Text>
@@ -16,7 +27,7 @@ export default function HomeScreen() {
           value={taskName}
         />
 
-        <TouchableOpacity style={styles.button} onPress={() => console.log('add')}>
+        <TouchableOpacity style={styles.button} onPress={() => addTask(taskName)}>
           <Text style={styles.buttonText}>
             +
           </Text>
@@ -24,7 +35,7 @@ export default function HomeScreen() {
       </View>
       <FlatList
         data={tasks} 
-        renderItem={({ item }) => <Text>{item}</Text>}
+        renderItem={({ item }) => <Card name={item} onRemove={() => removeTask(item)} />}
       />
     </View>
   );
@@ -59,7 +70,7 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     backgroundColor: '#31CF67',
-    borderRadius: 5,
+    borderRadius: 32,
     alignItems: 'center',
     justifyContent: 'center'
   },
